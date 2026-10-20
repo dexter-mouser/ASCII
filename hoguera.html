@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hoguera ASCII</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="lienzo"></canvas>
+
+  <div id="panel">
+    <a id="btnInicio" href="index.html">Inicio</a>
+    <button id="btnPantalla" type="button">Pantalla completa</button>
+  </div>
+
+  <!-- Orden de carga: configuración, utilidades, núcleo, escena, interfaz, arranque -->
+  <script src="js/configuracion.js"></script>
+  <script src="js/nucleo/utilidades.js"></script>
+  <script src="js/nucleo/cuadricula.js"></script>
+  <script src="js/nucleo/render.js"></script>
+  <script src="js/escena/iluminacion.js"></script>
+  <script src="js/escena/fondo.js"></script>
+  <script src="js/escena/cielo.js"></script>
+  <script src="js/escena/fuego.js"></script>
+  <script src="js/escena/personajes.js"></script>
+  <script src="js/escena/chispas.js"></script>
+  <script src="js/interfaz/controles.js"></script>
+  <script src="js/principal.js"></script>
+</body>
+</html>
