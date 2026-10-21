@@ -73,13 +73,42 @@ hoguera-ascii/
 
 ## Página de inicio
 
-- Fondo negro con el título «HOGUERA» en ASCII, que se revela con un efecto de descifrado, brilla como una brasa y deja subir chispas por la pantalla. En pantallas angostas el título se parte en dos líneas.
+- Fondo negro con el título «DIFERENTE» en ASCII, que se revela con un efecto de descifrado, brilla como una brasa y deja subir chispas por la pantalla. En pantallas angostas el título se parte en dos líneas.
 - Menú de escenas: se navega con ↑ ↓ y Enter, con el mouse o con toques. Las escenas que aún no existen aparecen como «próximamente».
 - Al entrar, la pantalla se apaga un instante y se abre la escena. La hoguera tiene un botón «Inicio» para volver.
 - Respeta la preferencia del sistema de reducir movimiento: en ese caso el título queda fijo y sin brasas.
 - Para añadir una escena nueva, se agrega una entrada con su `destino` en la lista `OPCIONES` de `js/inicio/opciones.js`.
 
 Archivos: `index.html` (inicio), `hoguera.html` (escena), `css/inicio.css`, `js/inicio/` (`opciones.js`, `portada.js`, `arranque.js`).
+
+## Escena de lluvia nocturna
+
+Se ve desde dentro de una casa, a través de una ventana con gotas que resbalan por el cristal. Afuera hay una tormenta sobre un paisaje que combina varios ambientes:
+
+- **Cielo y mar:** nubes de tormenta que avanzan y un mar con olas.
+- **Acantilado con castillo:** torres almenadas, ventanas encendidas y gallardetes agitados por el viento.
+- **Bosque y cabaña:** pinos que se mecen y una cabaña con ventana encendida y humo en la chimenea.
+- **Pueblo:** casas con ventanas que titilan, una taberna con letrero de neón que parpadea y una calle mojada con charcos que reflejan las luces y se ondulan con las gotas.
+- **Primer plano:** marco de madera, una taza humeante y una vela cuya llama ilumina la repisa.
+- **Lluvia:** dos capas (lejana y cercana) inclinadas por el viento, que solo se ven a través del cristal.
+- **Relámpagos:** cada pocos segundos un destello ilumina toda la escena y un rayo ramificado cruza el cielo.
+
+Controles: mover el puntero o el dedo inclina la lluvia, un clic o toque (o el botón «Relámpago») lanza un relámpago, `F` y el botón inferior activan la pantalla completa, y «Inicio» vuelve al menú.
+
+Archivos: `lluvia.html` y `js/lluvia/` (`ajustes.js`, `luz.js`, `escenario.js`, `humo.js`, `lluvia.js`, `rayo.js`, `arranque.js`).
+
+## Escena de la galaxia
+
+Una galaxia espiral que gira lentamente en un cielo profundo, pensada para ser ligera:
+
+- **Galaxia:** unas 3 200 estrellas en tres brazos en espiral con un bulbo central brillante. El centro gira más rápido que el borde y el color va del núcleo cálido a los brazos azules y el borde violeta.
+- **Fondo:** nebulosas de polvo en dos colores, estrellas fijas y otras que titilan, un planeta con anillos sombreado por la luz y una luna.
+- **Efectos:** estrellas fugaces cada pocos segundos y ondas de luz que se expanden al hacer clic o tocar.
+- **Rendimiento:** el fondo se dibuja una sola vez, la galaxia solo recorre las celdas que ocupa y la escena se actualiza a 30 fotogramas por segundo.
+
+Controles: mover el puntero o el dedo inclina y gira la galaxia, un clic o toque lanza una onda de luz, `F` y el botón inferior activan la pantalla completa, y «Inicio» vuelve al menú.
+
+Archivos: `galaxia.html` y `js/galaxia/` (`ajustes.js`, `fondo.js`, `galaxia.js`, `efectos.js`, `arranque.js`).
 
 ## Controles
 
@@ -92,6 +121,9 @@ Archivos: `index.html` (inicio), `hoguera.html` (escena), `css/inicio.css`, `js/
 
 ## Rendimiento
 
+- Todas las escenas y la portada se actualizan a 30 fotogramas por segundo con un bucle compartido (`js/nucleo/bucle.js`, valor `fotogramas` en `js/configuracion.js`).
+- Los colores de todas las escenas se realzan con más saturación y contraste en un solo lugar (`REALCE` en `js/nucleo/render.js`).
+- En la hoguera, el fondo y el caballero se redibujan por mitades de filas, alternando.
 - Cada letra se dibuja una vez por color y se reutiliza (atlas en caché), lo que permite usar letras pequeñas y mucho detalle.
 - El canvas se ajusta al tamaño de la ventana y la cuadrícula se recalcula al redimensionar.
 - El fondo (muros, suelo, cielo) se genera una sola vez al abrir o redimensionar; en cada fotograma solo se vuelve a iluminar y se actualizan llama y chispas.

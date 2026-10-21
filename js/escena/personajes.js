@@ -25,13 +25,15 @@ const FIGURAS = [
 ];
 
 const Personajes = {
-  dibujar(cuadricula) {
+  // Solo las filas de la paridad indicada (0 pares, 1 impares)
+  dibujar(cuadricula, paridad) {
     const u = Iluminacion.unidad;           // unidad de medida (se adapta a la pantalla)
     const pies = Iluminacion.fy + 1;
     const ax = Fondo.nichoX;
     const rampa = CONFIG.rampa;
 
     for (let y = Math.floor(pies - 14.5 * u); y <= pies; y++) {
+      if ((y & 1) !== paridad) continue;
       for (let x = Math.floor(ax - 10.5 * u / 0.6); x <= Math.ceil(ax + 8 * u / 0.6); x++) {
         const lx = ((x - ax) * 0.6) / u, ly = (pies - y) / u;
         for (const f of FIGURAS) {

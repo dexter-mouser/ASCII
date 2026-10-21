@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Galaxia</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="lienzo"></canvas>
+
+  <div id="panel">
+    <a id="btnInicio" href="index.html">Inicio</a>
+    <button id="btnPantalla" type="button">Pantalla completa</button>
+  </div>
+
+  <!-- Orden de carga: configuración, núcleo compartido, escena de la galaxia, arranque -->
+  <script src="js/configuracion.js"></script>
+  <script src="js/nucleo/utilidades.js"></script>
+  <script src="js/nucleo/cuadricula.js"></script>
+  <script src="js/nucleo/render.js"></script>
+  <script src="js/nucleo/bucle.js"></script>
+  <script src="js/galaxia/ajustes.js"></script>
+  <script src="js/galaxia/fondo.js"></script>
+  <script src="js/galaxia/galaxia.js"></script>
+  <script src="js/galaxia/efectos.js"></script>
+  <script src="js/galaxia/arranque.js"></script>
+</body>
+</html>

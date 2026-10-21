@@ -9,21 +9,34 @@ const GLIFOS = {
   U: ["#   #", "#   #", "#   #", "#   #", " ### "],
   E: ["#####", "#    ", "#### ", "#    ", "#####"],
   R: ["#### ", "#   #", "#### ", "#  # ", "#   #"],
-  A: [" ### ", "#   #", "#####", "#   #", "#   #"]
+  A: [" ### ", "#   #", "#####", "#   #", "#   #"],
+  D: ["#### ", "#   #", "#   #", "#   #", "#### "],
+  I: ["#####", "  #  ", "  #  ", "  #  ", "#####"],
+  F: ["#####", "#    ", "#### ", "#    ", "#    "],
+  N: ["#   #", "##  #", "# # #", "#  ##", "#   #"],
+  T: ["#####", "  #  ", "  #  ", "  #  ", "  #  "]
 };
+
+// Título de la portada: una línea en pantallas anchas y dos en pantallas angostas
+const TITULO = { ancho: ["DIFERENTE"], angosto: ["DIFE", "RENTE"] };
 const RUIDO = "01$&#%*+=-:.<>/|";
+
+// Sube la saturación de un color (como el realce del resto de las escenas)
+function realzar(c) {
+  const gris = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
+  return c.map((v) => Math.max(0, Math.min(255, Math.round(gris + (v - gris) * 1.45))));
+}
 
 // Color de la llama (calor de 0 a 1) como texto para el canvas
 function colorLlama(calor) {
   const pos = Math.max(0, Math.min(1, calor)) * (LLAMA.length - 1);
   const i = Math.min(Math.floor(pos), LLAMA.length - 2), f = pos - i;
-  const c = LLAMA[i].map((a, k) => Math.round(a + (LLAMA[i + 1][k] - a) * f));
+  const c = realzar(LLAMA[i].map((a, k) => Math.round(a + (LLAMA[i + 1][k] - a) * f)));
   return "rgb(" + c.join(",") + ")";
 }
 
 const Portada = {
   tiempo: 0,
-  previo: 0,
 
   iniciar(lienzo, raiz) {
     this.lienzo = lienzo;
@@ -33,7 +46,11 @@ const Portada = {
     this.ajustar();
     window.addEventListener("resize", () => { this.ajustar(); if (this.quieto) this.dibujar(0); });
     if (this.quieto) { this.tiempo = 10; this.dibujar(0); return; }  // sin animación: título fijo
-    requestAnimationFrame((t) => { this.previo = t; this.bucle(t); });
+    Bucle.iniciar(30, (dt) => {
+      if (!this.raiz.getClientRects().length) return;  // oculta: no se dibuja
+      this.tiempo += dt;
+      this.dibujar(dt);
+    });
   },
 
   // Calcula el tamaño de letra, las celdas del título y las brasas según la ventana
@@ -45,7 +62,7 @@ const Portada = {
     this.lienzo.height = alto * densidad;
     this.contexto.setTransform(densidad, 0, 0, densidad, 0, 0);
 
-    const lineas = ancho < 640 ? ["HOG", "UERA"] : ["HOGUERA"];  // en pantallas angostas el título va en dos líneas
+    const lineas = ancho < 640 ? TITULO.angosto : TITULO.ancho;  // en pantallas angostas el título va en dos líneas
     const columnas = Math.max(...lineas.map((l) => l.length * 6 - 1)) * 2;
     this.columnas = columnas;
     this.tamano = Math.max(7, Math.min(26, ancho * 0.86 / (columnas * 0.6)));
@@ -86,15 +103,6 @@ const Portada = {
       caracter: ".'*+"[Math.floor(Math.random() * 4)],
       aparece: 1 + Math.random() * 2.5  // las brasas empiezan a subir después del título
     };
-  },
-
-  bucle(ahora) {
-    requestAnimationFrame((t) => this.bucle(t));
-    const dt = Math.min((ahora - this.previo) / 1000, 0.05);
-    this.previo = ahora;
-    if (!this.raiz.getClientRects().length) return;  // oculta: no se dibuja
-    this.tiempo += dt;
-    this.dibujar(dt);
   },
 
   dibujar(dt) {

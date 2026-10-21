@@ -137,13 +137,14 @@ const Fondo = {
     }
   },
 
-  dibujar(cuadricula, tiempo) {
+  // Dibuja solo las filas pares (0) o impares (1); el resto de la capa conserva el fotograma anterior
+  dibujar(cuadricula, tiempo, paridad) {
     const rampa = CONFIG.rampa, tope = rampa.length - 1;
     const e = PALETA.estrella, nb = PALETA.nube, mt = PALETA.montana;
     for (let i = 0; i < this.tipo.length; i++) {
-      const tipo = this.tipo[i];
-      if (!tipo) continue;
-      const x = i % this.columnas, y = Math.floor(i / this.columnas), tx = this.textura[i];
+      const tipo = this.tipo[i], y = Math.floor(i / this.columnas);
+      if (!tipo || (y & 1) !== paridad) continue;
+      const x = i % this.columnas, tx = this.textura[i];
 
       if (tipo === 1) {  // estrellas parpadeantes
         const b = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(tiempo * 1.5 + this.fase[i]));
@@ -174,7 +175,11 @@ const Fondo = {
       }
     }
 
-    // Antorchas: soporte de madera y llama que parpadea
+  },
+
+  // Antorchas: soporte de madera y llama que parpadea (se dibujan en cada fotograma)
+  dibujarAntorchas(cuadricula, tiempo) {
+    const rampa = CONFIG.rampa, tope = rampa.length - 1;
     for (const a of this.antorchas) {
       const f = 0.75 + 0.25 * Math.sin(tiempo * 11 + a.x) * Math.sin(tiempo * 7.3 + a.x * 2);
       a.luz.fuerza = 0.6 * f;

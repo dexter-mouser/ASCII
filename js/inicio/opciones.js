@@ -2,8 +2,8 @@
 // Las entradas con destino null se muestran como "próximamente".
 const OPCIONES = [
   { nombre: "Entrar a la hoguera", destino: "hoguera.html" },
-  { nombre: "Lluvia nocturna", destino: null },
-  { nombre: "Galaxia", destino: null }
+  { nombre: "Lluvia nocturna", destino: "lluvia.html" },
+  { nombre: "Galaxia", destino: "galaxia.html" }
 ];
 
 const Menu = {
