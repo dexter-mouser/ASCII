@@ -21,7 +21,7 @@ const Efectos = {
 
   lanzarFugaz() {
     const C = Galaxia.C, F = Galaxia.filas;
-    this.espera = AJUSTES.fugazMin + Math.random() * (AJUSTES.fugazMax - AJUSTES.fugazMin);
+    this.espera = AJUSTES_GALAXIA.fugazMin + Math.random() * (AJUSTES_GALAXIA.fugazMax - AJUSTES_GALAXIA.fugazMin);
     const haciaIzquierda = Math.random() < 0.5;
     this.fugaces.push({
       x: C * (0.2 + Math.random() * 0.7), y: F * Math.random() * 0.35,

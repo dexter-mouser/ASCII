@@ -27,8 +27,8 @@ const Chispas = {
 
   actualizar(dt, viento) {
     // Ritmo de nacimiento según la intensidad de la llama
-    this.pendiente += CONFIG.chispasPorSegundo * Iluminacion.intensidad * dt;
-    this.pendienteHumo += CONFIG.humoPorSegundo * dt;
+    this.pendiente += AJUSTES_HOGUERA.chispasPorSegundo * Iluminacion.intensidad * dt;
+    this.pendienteHumo += AJUSTES_HOGUERA.humoPorSegundo * dt;
     const nuevas = Math.floor(this.pendiente), nuevoHumo = Math.floor(this.pendienteHumo);
     this.pendiente -= nuevas;
     this.pendienteHumo -= nuevoHumo;
@@ -54,7 +54,7 @@ const Chispas = {
         const luz = Iluminacion.luzEn(p.x, p.y);
         const indice = Math.floor(Utilidades.limitar(0.32 * resto * (0.25 + luz), 0, 1) * tope);
         if (indice < 1) continue;
-        Iluminacion.poner(cuadricula, p.x, p.y, rampa[indice], PALETA.humo, 0.9, luz);
+        Iluminacion.poner(cuadricula, p.x, p.y, rampa[indice], PALETA_HOGUERA.humo, 0.9, luz);
       } else {
         const caracter = resto > 0.6 ? "*" : resto > 0.3 ? "+" : ".";
         const color = Utilidades.colorLlama(0.3 + 0.7 * resto, paleta.llama, this.temporal);

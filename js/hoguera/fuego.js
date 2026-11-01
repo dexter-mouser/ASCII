@@ -24,9 +24,17 @@ const Fuego = {
     }
   },
 
+  avivado: 0,  // segundos que le quedan a la llama avivada
+
+  // Un clic aviva el fuego: la llama crece y alumbra más durante un momento
+  avivar() {
+    this.avivado = AJUSTES_HOGUERA.avivar;
+  },
+
   actualizar(dt, viento, tiempo) {
+    this.avivado = Math.max(0, this.avivado - dt);
     this.acumulado += dt;
-    const paso = 1 / CONFIG.pasosFuego;
+    const paso = 1 / AJUSTES_HOGUERA.pasosFuego;
     while (this.acumulado >= paso) {
       this.simular(viento);
       this.acumulado -= paso;
@@ -38,7 +46,7 @@ const Fuego = {
     for (let i = desde; i < this.calor.length; i++) suma += this.calor[i];
     const media = suma / (this.calor.length - desde);
     const parpadeo = 0.93 + 0.07 * Math.sin(tiempo * 13 + Math.sin(tiempo * 3) * 4);
-    const objetivo = Utilidades.limitar(media / 0.3, 0.6, 1.25) * parpadeo;
+    const objetivo = Utilidades.limitar(media / 0.3, 0.6, 1.25 + 0.35 * this.avivado / AJUSTES_HOGUERA.avivar) * parpadeo;
     Iluminacion.intensidad += (objetivo - Iluminacion.intensidad) * 0.2;
   },
 
@@ -47,6 +55,7 @@ const Fuego = {
     const { ancho, alto, calor } = this;
     const centro = (ancho - 1) / 2;
     const base = (alto - 1) * ancho;
+    const fuerza = this.avivado / AJUSTES_HOGUERA.avivar, frio = 2.0 * (1 - 0.4 * fuerza);  // avivada, la llama se enfría menos y sube más
 
     for (let x = 0; x < ancho; x++) {
       const dist = Math.abs(x - centro) / centro;
@@ -64,7 +73,7 @@ const Fuego = {
         const der = calor[filaAbajo + Math.min(xs + 1, ancho - 1)];
         const lejos = y + 2 < alto ? calor[(y + 2) * ancho + xs] : med;
         const borde = Math.abs(x - centro) / centro;
-        const enfriamiento = Math.random() * (2.0 / alto) * (1 + borde * 1.5);
+        const enfriamiento = Math.random() * (frio / alto) * (1 + borde * 1.5);
         calor[y * ancho + x] = Math.max(0, (izq + med + der + lejos) / 4 - enfriamiento);
       }
     }
@@ -87,12 +96,12 @@ const Fuego = {
   dibujarEspada(cuadricula) {
     const x = Iluminacion.fx;
     const punta = Math.floor(this.y0 + this.alto * 0.12);
-    Iluminacion.poner(cuadricula, x, punta, "O", PALETA.oro, 1.3);  // pomo
-    for (let k = 1; k <= 2; k++) Iluminacion.poner(cuadricula, x, punta + k, "#", PALETA.cuero, 1.3);  // empuñadura
-    for (let k = -2; k <= 2; k++) Iluminacion.poner(cuadricula, x + k, punta + 3, "<=+=>"[k + 2], PALETA.oro, 1.3);  // guarda
+    Iluminacion.poner(cuadricula, x, punta, "O", PALETA_HOGUERA.oro, 1.3);  // pomo
+    for (let k = 1; k <= 2; k++) Iluminacion.poner(cuadricula, x, punta + k, "#", PALETA_HOGUERA.cuero, 1.3);  // empuñadura
+    for (let k = -2; k <= 2; k++) Iluminacion.poner(cuadricula, x + k, punta + 3, "<=+=>"[k + 2], PALETA_HOGUERA.oro, 1.3);  // guarda
     for (let y = punta + 4; y < Iluminacion.fy; y++) {  // hoja rojiza con filo brillante
-      Iluminacion.poner(cuadricula, x, y, "|", PALETA.espada, 1.3);
-      Iluminacion.poner(cuadricula, x + 1, y, ":", PALETA.acero, 1.0);
+      Iluminacion.poner(cuadricula, x, y, "|", PALETA_HOGUERA.espada, 1.3);
+      Iluminacion.poner(cuadricula, x + 1, y, ":", PALETA_HOGUERA.acero, 1.0);
     }
   },
 
@@ -113,7 +122,7 @@ const Fuego = {
       for (let k = 0; k < linea.length; k++) {
         const c = linea[k];
         if (c === " ") continue;
-        Iluminacion.poner(cuadricula, x0 + k, Iluminacion.fy - 2 + j, c, PALETA.madera, c === "#" ? 0.55 : 1.0);
+        Iluminacion.poner(cuadricula, x0 + k, Iluminacion.fy - 2 + j, c, PALETA_HOGUERA.madera, c === "#" ? 0.55 : 1.0);
       }
     });
   }

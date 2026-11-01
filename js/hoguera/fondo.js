@@ -1,7 +1,7 @@
 // Escenario medieval: cielo con luna, castillo y montañas; muro con nicho, pendón y aspilleras; suelo con objetos
 // Tipos de celda: 0 vacío, 1 estrella, 2 luna, 3 montaña/castillo, 4 piedra, 5 junta, 6 suelo, 7 nicho/aspillera,
 // 8 nube, 9 ventana encendida, 11 hierba/musgo, 12 guijarro, 13 gallardete, 14 pendón, 15 emblema, 16 madera/hierro
-const Fondo = {
+const FondoHoguera = {
   // Se genera una sola vez (y al cambiar el tamaño de la ventana)
   generar(columnas, filas) {
     const total = columnas * filas;
@@ -11,7 +11,7 @@ const Fondo = {
     this.material = new Float32Array(total);
     this.fase = new Float32Array(total);
     this.familia = new Uint8Array(total);    // color: 0 muro, 1 pilar azul, 2 suelo, 3 madera, 4 hierro
-    this.colores = [PALETA.piedra, PALETA.piedraAzul, PALETA.suelo, PALETA.madera, PALETA.acero];
+    this.colores = [PALETA_HOGUERA.piedra, PALETA_HOGUERA.piedraAzul, PALETA_HOGUERA.suelo, PALETA_HOGUERA.madera, PALETA_HOGUERA.acero];
     this.temporal = [0, 0, 0];
 
     const ruido = Utilidades.ruido, fbm = Utilidades.fbm;
@@ -117,7 +117,11 @@ const Fondo = {
           if (y === t.tope - t.tejado - 2 && x > centro + 0.6 && x <= centro + 5) { castillo = 3; break; }
         }
         if (!castillo && x >= castX && x < murallaFin && y >= baseCastillo - filas * 0.07 + (x % 4 < 2 ? 0 : 1)) castillo = 1;  // muralla
-        if (castillo) { fijar(castillo === 2 ? 9 : castillo === 3 ? 13 : 3, 0, castillo === 1 ? 0.9 : 1); continue; }
+        if (castillo) {
+          const junta = y % 2 === 0 || (x + (y >> 1) % 2 * 2) % 4 === 0;  // sillares alternados
+          fijar(castillo === 2 ? 9 : castillo === 3 ? 13 : 3, 0, castillo === 1 ? (junta ? 0.6 : 0.85 + 0.15 * r) : 1);
+          continue;
+        }
 
         if (y >= filas * 0.30 + filas * 0.10 * fbm(x * 0.025, 5)) {  // montañas cercanas
           fijar(3, 0, 0.35 + 0.3 * fbm(x * 0.08, y * 0.2));
@@ -140,7 +144,7 @@ const Fondo = {
   // Dibuja solo las filas pares (0) o impares (1); el resto de la capa conserva el fotograma anterior
   dibujar(cuadricula, tiempo, paridad) {
     const rampa = CONFIG.rampa, tope = rampa.length - 1;
-    const e = PALETA.estrella, nb = PALETA.nube, mt = PALETA.montana;
+    const e = PALETA_HOGUERA.estrella, nb = PALETA_HOGUERA.nube, mt = PALETA_HOGUERA.montana;
     for (let i = 0; i < this.tipo.length; i++) {
       const tipo = this.tipo[i], y = Math.floor(i / this.columnas);
       if (!tipo || (y & 1) !== paridad) continue;
@@ -161,15 +165,15 @@ const Fondo = {
         const f = 0.7 + 0.3 * Math.sin(tiempo * 5 + this.fase[i] * 3);
         cuadricula.poner(x, y, "#", 255 * f, 190 * f, 90 * f);
       } else if (tipo === 13) {  // gallardetes que ondean
-        cuadricula.poner(x, y, "~-="[Math.floor(x * 0.7 + tiempo * 5) % 3], PALETA.tela[0] * 1.6, PALETA.tela[1] * 1.6, PALETA.tela[2] * 1.6);
+        cuadricula.poner(x, y, "~-="[Math.floor(x * 0.7 + tiempo * 5) % 3], PALETA_HOGUERA.tela[0] * 1.6, PALETA_HOGUERA.tela[1] * 1.6, PALETA_HOGUERA.tela[2] * 1.6);
       } else if (tipo === 11) {  // hierba y musgo
-        Iluminacion.poner(cuadricula, x, y, this.fase[i] > 4.7 ? '"' : this.fase[i] > 3.1 ? "'" : "^", PALETA.hierba, 1.2);
+        Iluminacion.poner(cuadricula, x, y, this.fase[i] > 4.7 ? '"' : this.fase[i] > 3.1 ? "'" : "^", PALETA_HOGUERA.hierba, 1.2);
       } else if (tipo === 12) {  // guijarros
-        Iluminacion.poner(cuadricula, x, y, this.fase[i] > 3.5 ? "O" : "o", PALETA.suelo, 0.9);
+        Iluminacion.poner(cuadricula, x, y, this.fase[i] > 3.5 ? "O" : "o", PALETA_HOGUERA.suelo, 0.9);
       } else if (tipo === 14) {  // pendón de tela
-        Iluminacion.ponerRampa(cuadricula, x, y, PALETA.tela, 1, tx, 1.5);
+        Iluminacion.ponerRampa(cuadricula, x, y, PALETA_HOGUERA.tela, 1, tx, 1.5);
       } else if (tipo === 15) {  // emblema dorado
-        Iluminacion.poner(cuadricula, x, y, "#", PALETA.oro, 1.1);
+        Iluminacion.poner(cuadricula, x, y, "#", PALETA_HOGUERA.oro, 1.1);
       } else {  // piedra, juntas, suelo, nicho y madera: reciben luz del fuego
         Iluminacion.ponerRampa(cuadricula, x, y, this.colores[this.familia[i]], this.material[i], tx, tipo === 5 ? 0.45 : tipo === 16 ? 1.25 : 1.1);
       }
@@ -183,11 +187,11 @@ const Fondo = {
     for (const a of this.antorchas) {
       const f = 0.75 + 0.25 * Math.sin(tiempo * 11 + a.x) * Math.sin(tiempo * 7.3 + a.x * 2);
       a.luz.fuerza = 0.6 * f;
-      Iluminacion.poner(cuadricula, a.x, a.y + 1, "|", PALETA.madera, 1.3);
-      Iluminacion.poner(cuadricula, a.x, a.y + 2, "|", PALETA.madera, 1.3);
+      Iluminacion.poner(cuadricula, a.x, a.y + 1, "|", PALETA_HOGUERA.madera, 1.3);
+      Iluminacion.poner(cuadricula, a.x, a.y + 2, "|", PALETA_HOGUERA.madera, 1.3);
       for (let j = 0; j < 3; j++) {
         const v = (1 - j / 3) * f;
-        const c = Utilidades.colorLlama(v, PALETA.llama, this.temporal);
+        const c = Utilidades.colorLlama(v, PALETA_HOGUERA.llama, this.temporal);
         cuadricula.poner(a.x, a.y - j, rampa[Math.floor(Utilidades.limitar(v, 0, 1) * 0.9 * tope)], c[0], c[1], c[2]);
       }
     }

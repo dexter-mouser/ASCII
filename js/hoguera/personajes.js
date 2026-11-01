@@ -29,7 +29,7 @@ const Personajes = {
   dibujar(cuadricula, paridad) {
     const u = Iluminacion.unidad;           // unidad de medida (se adapta a la pantalla)
     const pies = Iluminacion.fy + 1;
-    const ax = Fondo.nichoX;
+    const ax = FondoHoguera.nichoX;
     const rampa = CONFIG.rampa;
 
     for (let y = Math.floor(pies - 14.5 * u); y <= pies; y++) {
@@ -45,7 +45,7 @@ const Personajes = {
           const luz = Iluminacion.luzEn(x, y) * lambert + 0.22;
           const brillo = (0.12 + luz * 1.1 + 0.08 * (1 - nz)) * f[4];
           const indice = Math.max(4, Math.floor(Utilidades.limitar(brillo, 0, 1) * (rampa.length - 1)));
-          Iluminacion.poner(cuadricula, x, y, rampa[indice], PALETA[f[5]], f[4], luz);
+          Iluminacion.poner(cuadricula, x, y, rampa[indice], PALETA_HOGUERA[f[5]], f[4], luz);
           break;  // solo la forma que queda delante
         }
       }

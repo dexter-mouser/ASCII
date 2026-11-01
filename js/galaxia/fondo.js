@@ -13,10 +13,21 @@ const FondoGalaxia = {
     for (let y = 0; y < filas; y++) {
       for (let x = 0; x < columnas; x++) {
         const d = lim((fbm(x * 0.02 + 3, y * 0.045) - 0.52) * 3, 0, 1);
-        if (d > 0 && ruido(x, y) < d * 0.35) {
-          const m = fbm(x * 0.015 + 9, y * 0.03), a = P.nebulosaA, b = P.nebulosaB, k = 0.35 + 0.4 * d;
-          capa.poner(x, y, rampa[Math.floor(d * 0.2 * tope) + 1], (a[0] * (1 - m) + b[0] * m) * k, (a[1] * (1 - m) + b[1] * m) * k, (a[2] * (1 - m) + b[2] * m) * k);
+        if (d > 0 && ruido(x, y) < d * 0.55) {
+          const m = fbm(x * 0.015 + 9, y * 0.03), a = P.nebulosaA, b = P.nebulosaB, k = 0.45 + 0.5 * d;
+          capa.poner(x, y, RAMPA_GALAXIA[1 + Math.floor(d * 4)], (a[0] * (1 - m) + b[0] * m) * k, (a[1] * (1 - m) + b[1] * m) * k, (a[2] * (1 - m) + b[2] * m) * k);
         }
+      }
+    }
+
+    // Galaxias lejanas: pequeñas manchas elípticas, cada una con su inclinación
+    for (let i = 0; i < 6; i++) {
+      const gx = columnas * (0.05 + 0.9 * ruido(i, 41)), gy = filas * (0.08 + 0.84 * ruido(i, 42));
+      if (Math.abs(gx - columnas * 0.56) < columnas * 0.25 && Math.abs(gy - filas * 0.46) < filas * 0.3) continue;  // no tapar la galaxia
+      const largo = 2 + ruido(i, 43) * 3, giro = ruido(i, 44) * 3.14, c = P.lejanas;
+      for (let t = -largo; t <= largo; t += 0.5) {
+        const v = 1 - Math.abs(t) / (largo + 0.5), x = gx + Math.cos(giro) * t / 0.6, y = gy + Math.sin(giro) * t * 0.4;
+        capa.poner(x, y, v > 0.7 ? "o" : v > 0.4 ? ":" : ".", c[0] * (0.3 + 0.5 * v), c[1] * (0.3 + 0.5 * v), c[2] * (0.3 + 0.5 * v));
       }
     }
 

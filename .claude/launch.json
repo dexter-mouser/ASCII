@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "escenas",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "C:\\Users\\LOQ\\AppData\\Local\\Temp\\claude\\C--VSCODE-hoguera-ascii-completo\\53f6f733-2d94-469c-8be5-5c03c1691cec\\scratchpad\\servidor.ps1"],
+      "port": 8765
+    }
+  ]
+}

@@ -25,7 +25,7 @@ const Iluminacion = {
   // Escribe una celda: color base del material, azulado de noche y anaranjado cerca del fuego
   poner(cuadricula, x, y, caracter, base, factor, luzPropia) {
     const luz = luzPropia === undefined ? this.luzEn(x, y) : luzPropia;
-    const a = PALETA.ambiente, c = PALETA.calida;
+    const a = PALETA_HOGUERA.ambiente, c = PALETA_HOGUERA.calida;
     cuadricula.poner(x, y, caracter,
       base[0] * (a[0] + c[0] * luz) * factor,
       base[1] * (a[1] + c[1] * luz) * factor,

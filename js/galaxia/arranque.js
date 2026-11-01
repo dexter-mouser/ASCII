@@ -6,7 +6,7 @@
   // Recalcula todo según el tamaño de la ventana
   function configurar() {
     const ancho = window.innerWidth, alto = window.innerHeight;
-    Render.ajustar(lienzo, ancho, alto, Utilidades.limitar(ancho / 100, 8, 14));  // letra no muy pequeña = menos celdas
+    Render.ajustar(lienzo, ancho, alto, Utilidades.limitar(ancho / 120, 7, 13));
     cuadricula = new Cuadricula(Render.columnas, Render.filas);
     capaFondo = new Cuadricula(Render.columnas, Render.filas);
     FondoGalaxia.generar(capaFondo, Render.columnas, Render.filas);
